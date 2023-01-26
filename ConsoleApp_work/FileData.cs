@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 
 namespace ConsoleApp_work
@@ -8,14 +9,13 @@ namespace ConsoleApp_work
     public class FileData
     {
         private string PathRead { get; set; }
-        private List<Record> list = new List<Record>();
 
         public  FileData(string path)
         {
             PathRead = path;
         }
 
-        public void ReadAll()
+        public void ReadAndWriteCsv()
         {
             if (!File.Exists(this.PathRead))
             {
@@ -23,35 +23,59 @@ namespace ConsoleApp_work
                 return;
             }
 
+
             using (StreamReader reader = new StreamReader(this.PathRead))
             {
-                var cvReader = new CsvReader(reader);
-                this.list = cvReader.ReadAll();
+                string? line;
+                line = reader.ReadLine();
+                int i = 0;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    i++;
+                    try
+                    {
+                        string[] parts = line.Split(',');
+                        if (!parts[0].Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            continue;
+                        }
+                        var record = new Record();
+                        record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
+                        record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
+                        record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);
+                        record.Cell = uint.Parse(parts[4], CultureInfo.InvariantCulture);
+
+                        IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
+
+                        record.Lon = double.Parse(parts[6], formatter);
+                        record.Lat = double.Parse(parts[7], formatter);
+
+                        var pathWrite = Path.GetDirectoryName(PathRead);
+                        var nameRead = Path.GetFileName(PathRead);
+                        pathWrite = pathWrite + nameRead.Insert(0, "out_");
+                        bool continueFile = false;
+                        
+                        if (i > 1)
+                        {
+                            continueFile = true;
+                        }
+                        using (StreamWriter writer = new StreamWriter(pathWrite, continueFile))
+                        {
+                            if (i == 1)
+                            {
+                                writer.WriteLine("mcc,net,area,cell,lon,lat");
+                            }
+
+                            writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"line number {i} convert error,line skipped");
+                        continue;
+                    }
+                }
             }
         }
-        public void Write6()
-        {
-            var pathWrite = Path.GetDirectoryName(PathRead);
-            if (!Directory.Exists(pathWrite))
-            {
-                Console.WriteLine("ERROR write. This directory is not exist");
-                return;
-            }
-
-            var nameRead = Path.GetFileName(PathRead);
-            pathWrite = pathWrite + nameRead.Insert(0, "out_");
-
-            using (StreamWriter writer = new StreamWriter(pathWrite, false))
-            {
-                var cvReader = new CsvWriter(writer);
-                cvReader.Write6(list);
-            }
-        }
-
-        public void DeleteAll()
-        {    
-            this.list.Clear();   
-        }
-
     }
 }
