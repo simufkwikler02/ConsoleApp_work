@@ -6,6 +6,7 @@ do
 {
     Console.WriteLine("Enter the path file:");
     string path = Console.ReadLine() ?? string.Empty;
+    path = "D:\\257.csv";
     if (!File.Exists(path))
     {
         Console.WriteLine("This path is not exist");
@@ -16,6 +17,7 @@ do
     Console.WriteLine("Read finish");
     fileData.Write6();
     Console.WriteLine("Write finish");
+    Console.WriteLine("---------------------------------------------");
 } while (true);
 
 

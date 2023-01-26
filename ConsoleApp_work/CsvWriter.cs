@@ -22,7 +22,10 @@ namespace ConsoleApp_work
             this.writer.WriteLine("mcc,net,area,cell,lon,lat");
             foreach (var record in records)
             {
-                this.writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
+                if(record.Radio.Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    this.writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
+                }
             }
         }
     }

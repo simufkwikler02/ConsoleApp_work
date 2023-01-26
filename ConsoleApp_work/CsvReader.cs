@@ -20,7 +20,7 @@ namespace ConsoleApp_work
         {
             string? line;
             line = this.reader.ReadLine();
-            int i = 1;
+            int i = 0;
             List<Record> list = new List<Record>();
             while ((line = this.reader.ReadLine()) != null)
             {
@@ -34,18 +34,11 @@ namespace ConsoleApp_work
                     record.Net = int.Parse(parts[2], CultureInfo.InvariantCulture);
                     record.Area = int.Parse(parts[3], CultureInfo.InvariantCulture);
                     record.Cell = int.Parse(parts[4], CultureInfo.InvariantCulture);
-                    record.Unit = int.Parse(parts[5], CultureInfo.InvariantCulture);
 
                     IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
                     
                     record.Lon = double.Parse(parts[6], formatter);
                     record.Lat = double.Parse(parts[7], formatter);
-                    record.Range = int.Parse(parts[8], CultureInfo.InvariantCulture);
-                    record.Samples = int.Parse(parts[9], CultureInfo.InvariantCulture);
-                    record.Changeable = int.Parse(parts[10], CultureInfo.InvariantCulture);
-                    record.Created = long.Parse(parts[11], CultureInfo.InvariantCulture);
-                    record.Updated = long.Parse(parts[12], CultureInfo.InvariantCulture);
-                    record.AverageSignal = int.Parse(parts[13], CultureInfo.InvariantCulture);
                     list.Add(record);
                 }
                 catch
