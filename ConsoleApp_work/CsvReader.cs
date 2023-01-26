@@ -26,8 +26,11 @@ namespace ConsoleApp_work
                 try
                 {
                     string[] parts = line.Split(',');
+                    if (!parts[0].Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
                     var record = new Record();
-                    record.Radio = parts[0];
                     record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
                     record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
                     record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);

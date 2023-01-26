@@ -39,7 +39,7 @@ namespace ConsoleApp_work
             }
 
             var nameRead = Path.GetFileName(PathRead);
-            pathWrite = pathWrite + nameRead.Insert(nameRead.LastIndexOf("."), "_out");
+            pathWrite = pathWrite + nameRead.Insert(0, "out_");
 
             using (StreamWriter writer = new StreamWriter(pathWrite, false))
             {

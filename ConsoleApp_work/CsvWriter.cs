@@ -19,11 +19,8 @@ namespace ConsoleApp_work
             IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
             this.writer.WriteLine("mcc,net,area,cell,lon,lat");
             foreach (var record in records)
-            {
-                if(record.Radio.Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    this.writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
-                }
+            {  
+                this.writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
             }
         }
     }

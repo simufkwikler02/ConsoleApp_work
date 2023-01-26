@@ -6,8 +6,6 @@ namespace ConsoleApp_work
 {
     public class Record
     {
-        public string? Radio { get; set; }
-
         public ushort Mcc { get; set; }
 
         public byte Net { get; set; }
@@ -22,7 +20,6 @@ namespace ConsoleApp_work
 
         public Record()
         {
-            this.Radio = String.Empty;
             this.Mcc = 0;
             this.Net = 0;
             this.Area = 0;
