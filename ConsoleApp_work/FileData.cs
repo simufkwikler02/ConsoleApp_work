@@ -8,7 +8,8 @@ namespace ConsoleApp_work
 {
     public class FileData
     {
-        public string Path { get; set; }
+        private string Path { get; set; }
+        private readonly string pathWrite = "D:\\result.csv";
         private List<Record> list = new List<Record>();
 
         public  FileData(string path)
@@ -32,8 +33,6 @@ namespace ConsoleApp_work
         }
         public void Write6()
         {
-            var pathWrite = "D:\\result.csv";
-
             using (StreamWriter writer = new StreamWriter(pathWrite, false))
             {
                 var cvReader = new CsvWriter(writer);
