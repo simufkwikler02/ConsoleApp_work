@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp_work
 {
@@ -10,13 +8,13 @@ namespace ConsoleApp_work
     {
         public string? Radio { get; set; }
 
-        public int Mcc { get; set; }
+        public ushort Mcc { get; set; }
 
-        public int Net { get; set; }
+        public byte Net { get; set; }
 
-        public int Area { get; set; }
+        public ushort Area { get; set; }
 
-        public int Cell { get; set; }
+        public uint Cell { get; set; }
 
         public double Lon { get; set; }
 

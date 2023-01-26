@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ConsoleApp_work
 {
@@ -50,12 +49,8 @@ namespace ConsoleApp_work
         }
 
         public void DeleteAll()
-        {
-            using (StreamReader reader = new StreamReader(this.PathRead))
-            {
-                var cvReader = new CsvReader(reader);
-                this.list.Clear();
-            }
+        {    
+            this.list.Clear();   
         }
 
     }

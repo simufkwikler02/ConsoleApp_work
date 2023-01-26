@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Globalization;
-using System.Threading.Tasks;
 
 namespace ConsoleApp_work
 {
@@ -30,10 +28,10 @@ namespace ConsoleApp_work
                     string[] parts = line.Split(',');
                     var record = new Record();
                     record.Radio = parts[0];
-                    record.Mcc = int.Parse(parts[1], CultureInfo.InvariantCulture);
-                    record.Net = int.Parse(parts[2], CultureInfo.InvariantCulture);
-                    record.Area = int.Parse(parts[3], CultureInfo.InvariantCulture);
-                    record.Cell = int.Parse(parts[4], CultureInfo.InvariantCulture);
+                    record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
+                    record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
+                    record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);
+                    record.Cell = uint.Parse(parts[4], CultureInfo.InvariantCulture);
 
                     IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
                     
