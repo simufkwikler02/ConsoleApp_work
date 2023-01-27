@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
 using ConsoleApp_work;
+using System.Diagnostics;
 
 do
 {
     Console.WriteLine("Enter the path file:");
     string path = Console.ReadLine() ?? string.Empty;
-    //path = "D:\\257.csv";
+    path = "D:\\257.csv";
+    var t = new Stopwatch();
+    t.Start();
     if (!File.Exists(path))
     {
         Console.WriteLine("This path is not exist");
@@ -14,7 +17,8 @@ do
     }
     var fileData = new FileData(path);
     fileData.ReadAndWriteCsv();
-    Console.WriteLine("Read adn write finish");
+    t.Stop();
+    Console.WriteLine($"Read adn write finish t = {t.ElapsedMilliseconds}");
     Console.WriteLine("---------------------------------------------");
 
 } while (true);

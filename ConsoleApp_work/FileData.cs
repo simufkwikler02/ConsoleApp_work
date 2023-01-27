@@ -26,53 +26,45 @@ namespace ConsoleApp_work
 
             using (StreamReader reader = new StreamReader(this.PathRead))
             {
-                string? line;
-                line = reader.ReadLine();
-                int i = 0;
-                while ((line = reader.ReadLine()) != null)
+                var pathWrite = Path.GetDirectoryName(PathRead);
+                var nameRead = Path.GetFileName(PathRead);
+                pathWrite = pathWrite + nameRead.Insert(0, "out_");
+
+                using (StreamWriter writer = new StreamWriter(pathWrite, false))
                 {
-                    i++;
-                    try
+                    string? line;
+                    line = reader.ReadLine();
+                    int i = 0;
+
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        string[] parts = line.Split(',');
-                        if (!parts[0].Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                        i++;
+                        try
                         {
-                            continue;
-                        }
-                        var record = new Record();
-                        record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
-                        record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
-                        record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);
-                        record.Cell = uint.Parse(parts[4], CultureInfo.InvariantCulture);
-
-                        IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
-
-                        record.Lon = double.Parse(parts[6], formatter);
-                        record.Lat = double.Parse(parts[7], formatter);
-
-                        var pathWrite = Path.GetDirectoryName(PathRead);
-                        var nameRead = Path.GetFileName(PathRead);
-                        pathWrite = pathWrite + nameRead.Insert(0, "out_");
-                        bool continueFile = false;
-                        
-                        if (i > 1)
-                        {
-                            continueFile = true;
-                        }
-                        using (StreamWriter writer = new StreamWriter(pathWrite, continueFile))
-                        {
-                            if (i == 1)
+                            string[] parts = line.Split(',');
+                            if (!parts[0].Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                writer.WriteLine("mcc,net,area,cell,lon,lat");
+                                continue;
                             }
+                            var record = new Record();
+                            record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
+                            record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
+                            record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);
+                            record.Cell = uint.Parse(parts[4], CultureInfo.InvariantCulture);
+
+                            IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
+
+                            record.Lon = double.Parse(parts[6], formatter);
+                            record.Lat = double.Parse(parts[7], formatter);
 
                             writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
+
                         }
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"line number {i} convert error,line skipped");
-                        continue;
+                        catch
+                        {
+                            Console.WriteLine($"line number {i} convert error,line skipped");
+                            continue;
+                        }
                     }
                 }
             }
