@@ -33,7 +33,6 @@ namespace ConsoleApp_work
                 using (StreamWriter writer = new StreamWriter(pathWrite, false))
                 {
                     string? line;
-                    line = reader.ReadLine();
                     int i = 0;
 
                     while ((line = reader.ReadLine()) != null)
@@ -58,7 +57,6 @@ namespace ConsoleApp_work
                             record.Lat = double.Parse(parts[7], formatter);
 
                             writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
-
                         }
                         catch
                         {
