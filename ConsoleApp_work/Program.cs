@@ -7,7 +7,7 @@ do
 {
     Console.WriteLine("Enter the path file:");
     string path = Console.ReadLine() ?? string.Empty;
-    path = "D:\\257.csv";
+    //path = "D:\\257.csv";
     var t = new Stopwatch();
     t.Start();
     if (!File.Exists(path))

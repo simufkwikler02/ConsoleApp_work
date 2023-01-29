@@ -34,29 +34,47 @@ namespace ConsoleApp_work
                 {
                     string? line;
                     int i = 0;
+                    IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
 
                     while ((line = reader.ReadLine()) != null)
                     {
                         i++;
                         try
                         {
-                            string[] parts = line.Split(',');
-                            if (!parts[0].Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                            var ind = line.IndexOf(',');
+                            
+                            if (!line.Substring(0, ind).Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 continue;
                             }
-                            var record = new Record();
-                            record.Mcc = ushort.Parse(parts[1], CultureInfo.InvariantCulture);
-                            record.Net = byte.Parse(parts[2], CultureInfo.InvariantCulture);
-                            record.Area = ushort.Parse(parts[3], CultureInfo.InvariantCulture);
-                            record.Cell = uint.Parse(parts[4], CultureInfo.InvariantCulture);
 
-                            IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
+                            var indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Mcc = ushort.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+                            
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Net = byte.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
 
-                            record.Lon = double.Parse(parts[6], formatter);
-                            record.Lat = double.Parse(parts[7], formatter);
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Area = ushort.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
 
-                            writer.WriteLine($"{record.Mcc},{record.Net},{record.Area},{record.Cell},{record.Lon.ToString(formatter)},{record.Lat.ToString(formatter)}");
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Cell = uint.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Lon = double.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), formatter);
+
+                            indBuf = ind;
+                            ind = line.IndexOf(',', indBuf + 1);
+                            var Lat = double.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), formatter);
+
+                            writer.WriteLine($"{Mcc},{Net},{Area},{Cell},{Lon.ToString(formatter)},{Lat.ToString(formatter)}");
                         }
                         catch
                         {
