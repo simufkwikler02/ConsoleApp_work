@@ -2,12 +2,13 @@
 using System.IO;
 using ConsoleApp_work;
 using System.Diagnostics;
+using BenchmarkDotNet.Running;
 
 do
 {
     Console.WriteLine("Enter the path file:");
     string path = Console.ReadLine() ?? string.Empty;
-    //path = "D:\\257.csv";
+    path = "D:\\257.csv";
     var t = new Stopwatch();
     t.Start();
     if (!File.Exists(path))
@@ -22,5 +23,7 @@ do
     Console.WriteLine("---------------------------------------------");
 
 } while (true);
+
+//BenchmarkRunner.Run<DataBenchmarks>();
 
 

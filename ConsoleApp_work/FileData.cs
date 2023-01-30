@@ -41,38 +41,39 @@ namespace ConsoleApp_work
                         i++;
                         try
                         {
+                            var lineSpan = line.AsSpan();
                             var ind = line.IndexOf(',');
                             
-                            if (!line.Substring(0, ind).Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                            if (!line.AsSpan().Slice(0, ind).Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 continue;
                             }
 
                             var indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Mcc = ushort.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+                            var Mcc = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
                             
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Net = byte.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+                            var Net = byte.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Area = ushort.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+                            var Area = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Cell = uint.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), CultureInfo.InvariantCulture);
+                            var Cell = uint.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Lon = double.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), formatter);
+                            var Lon = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
 
                             indBuf = ind;
                             ind = line.IndexOf(',', indBuf + 1);
-                            var Lat = double.Parse(line.Substring(indBuf + 1, ind - indBuf - 1), formatter);
+                            var Lat = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
 
                             writer.WriteLine($"{Mcc},{Net},{Area},{Cell},{Lon.ToString(formatter)},{Lat.ToString(formatter)}");
                         }
