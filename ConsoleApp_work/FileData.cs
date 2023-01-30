@@ -9,6 +9,7 @@ namespace ConsoleApp_work
     public class FileData
     {
         private string PathRead { get; set; }
+        private char Separator = ',';
 
         public  FileData(string path)
         {
@@ -42,37 +43,61 @@ namespace ConsoleApp_work
                         try
                         {
                             var lineSpan = line.AsSpan();
-                            var ind = line.IndexOf(',');
-                            
-                            if (!line.AsSpan().Slice(0, ind).Equals("GSM", StringComparison.InvariantCultureIgnoreCase))
+                            var ind = line.IndexOf(Separator);
+                            if (ind == -1)
+                                continue;
+
+                            var firstLine = lineSpan.Slice(0, ind);
+                            if (!(firstLine[0] == 'G' && firstLine[1] == 'S' && firstLine[2] == 'M'))
                             {
                                 continue;
                             }
 
                             var indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Mcc = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
                             
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Net = byte.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Area = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Cell = uint.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
 
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Lon = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
 
                             indBuf = ind;
-                            ind = line.IndexOf(',', indBuf + 1);
+                            ind = line.IndexOf(Separator, indBuf + 1);
+                            if (ind == -1)
+                                continue;
+
                             var Lat = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
 
                             writer.WriteLine($"{Mcc},{Net},{Area},{Cell},{Lon.ToString(formatter)},{Lat.ToString(formatter)}");
