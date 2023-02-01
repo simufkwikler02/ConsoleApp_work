@@ -23,93 +23,126 @@ namespace ConsoleApp_work
                 Console.WriteLine("ERROR read. This path is not exist");
                 return;
             }
+            
+            using var reader = File.OpenText(this.PathRead);
 
+            var pathWrite = Path.GetDirectoryName(PathRead);
+            var nameRead = Path.GetFileName(PathRead);
+            pathWrite = pathWrite + nameRead.Insert(0, "out_");
 
-            using (StreamReader reader = new StreamReader(this.PathRead))
+            using var writer = File.CreateText(pathWrite);
+
+                
+            string? line;
+            int i = 0;
+            IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
+            var resultLine = new StringBuilder();
+
+            while ((line = reader.ReadLine()) != null)
             {
-                var pathWrite = Path.GetDirectoryName(PathRead);
-                var nameRead = Path.GetFileName(PathRead);
-                pathWrite = pathWrite + nameRead.Insert(0, "out_");
+                resultLine.Clear();
+                i++;
+                
+                var lineSpan = line.AsSpan();
+                var ind = line.IndexOf(Separator);
+                if (ind == -1)
+                    continue;
 
-                using (StreamWriter writer = new StreamWriter(pathWrite, false))
+                var firstLine = lineSpan.Slice(0, ind);
+                if (!(firstLine[0] == 'G' && firstLine[1] == 'S' && firstLine[2] == 'M'))
+                    continue;
+                
+
+                var indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                ushort Mcc;
+                if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Mcc))
                 {
-                    string? line;
-                    int i = 0;
-                    IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
-
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        i++;
-                        try
-                        {
-                            var lineSpan = line.AsSpan();
-                            var ind = line.IndexOf(Separator);
-                            if (ind == -1)
-                                continue;
-
-                            var firstLine = lineSpan.Slice(0, ind);
-                            if (!(firstLine[0] == 'G' && firstLine[1] == 'S' && firstLine[2] == 'M'))
-                            {
-                                continue;
-                            }
-
-                            var indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Mcc = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
-                            
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Net = byte.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
-
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Area = ushort.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
-
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Cell = uint.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1));
-
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Lon = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
-
-                            indBuf = ind;
-                            ind = line.IndexOf(Separator, indBuf + 1);
-                            if (ind == -1)
-                                continue;
-
-                            var Lat = double.Parse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter);
-
-                            writer.WriteLine($"{Mcc},{Net},{Area},{Cell},{Lon.ToString(formatter)},{Lat.ToString(formatter)}");
-                        }
-                        catch
-                        {
-                            Console.WriteLine($"line number {i} convert error,line skipped");
-                            continue;
-                        }
-                    }
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
                 }
-            }
+                   
+                            
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                byte Net;
+                if (!byte.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Net))
+                {
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
+                }
+
+
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                ushort Area;
+                if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Area))
+                {
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
+                }
+
+
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                uint Cell;
+                if (!uint.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Cell))
+                {
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
+                }
+
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                double Lon;
+                if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter, out Lon))
+                {
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
+                }
+
+                indBuf = ind;
+                ind = line.IndexOf(Separator, indBuf + 1);
+                if (ind == -1)
+                    continue;
+
+                double Lat;
+                if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter, out Lat))
+                {
+                    Console.WriteLine($"line number {i} convert error,line skipped");
+                    continue;
+                }
+
+                    
+                resultLine.Append(Mcc).Append(',');
+                resultLine.Append(Net).Append(',');
+                resultLine.Append(Area).Append(',');
+                resultLine.Append(Cell).Append(',');
+                resultLine.Append(Lon.ToString(formatter)).Append(',');
+                resultLine.Append(Lat.ToString(formatter)).AppendLine();
+                writer.Write(resultLine);            
+            }                
+            
         }
     }
 }
