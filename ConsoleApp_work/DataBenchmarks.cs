@@ -13,12 +13,21 @@ namespace ConsoleApp_work
     [RankColumn]
     public class DataBenchmarks
     {
-        private const string path = "D:\\257.csv";
+        private string url = "https://drive.google.com/u/0/uc?id=11gltuDZucDoX_7W32o0MfVFAp9PXFkh9&export=download";
+        private string save_path = "D:\\257.csv";
 
         [Benchmark]
-        public void Foo1()
+        public async Task Foo1()
         {
-            var fileData = new FileData(path);
+            await Task.WhenAll(HttpHelper.DownloadFileAsync(url, save_path));
+
+            if (!File.Exists(save_path))
+            {
+                Console.WriteLine("This path is not exist");
+                return;
+            }
+
+            var fileData = new FileData(save_path);
             fileData.ReadAndWriteCsv();
         }
     }

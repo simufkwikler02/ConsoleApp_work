@@ -23,7 +23,6 @@ namespace ConsoleApp_work
             var bt = await response.Content.ReadAsStringAsync();
             using var writer = File.CreateText(outputPath);
             writer.Write(bt);
-            Console.WriteLine("OK");
         }
     }
 }

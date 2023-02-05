@@ -38,6 +38,7 @@ Console.WriteLine("---------------------------------------------");
 
 #else
 BenchmarkRunner.Run<DataBenchmarks>();
+Console.ReadKey();
 #endif
 
 
