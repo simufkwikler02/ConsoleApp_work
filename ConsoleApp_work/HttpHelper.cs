@@ -10,7 +10,7 @@ namespace ConsoleApp_work
     {
         private static readonly HttpClient _httpClient = new HttpClient();
 
-        public static async void DownloadFileAsync(string uri, string outputPath)
+        public static async Task DownloadFileAsync(string uri, string outputPath)
         {
             Uri uriResult;
 
@@ -20,10 +20,9 @@ namespace ConsoleApp_work
             
 
             var response = await _httpClient.GetAsync(uriResult);
-            var bt = await response.Content.ReadAsByteArrayAsync();
-            File.WriteAllBytes(outputPath, bt);
-            //using var writer = File.CreateText(outputPath);
-            //writer.Write(bt);
+            var bt = await response.Content.ReadAsStringAsync();
+            using var writer = File.CreateText(outputPath);
+            writer.Write(bt);
             Console.WriteLine("OK");
         }
     }

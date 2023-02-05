@@ -140,9 +140,10 @@ namespace ConsoleApp_work
                 resultLine.Append(Cell).Append(',');
                 resultLine.Append(Lon.ToString(formatter)).Append(',');
                 resultLine.Append(Lat.ToString(formatter)).AppendLine();
-                writer.Write(resultLine);            
-            }                
-            
+                writer.Write(resultLine);
+            }
+
+            Console.WriteLine($"Save to {pathWrite}");
         }
     }
 }
