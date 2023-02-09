@@ -15,13 +15,8 @@ namespace ConsoleApp_work
 
         public async Task DownloadAndSaveCsv(string uri, string pathWrite)
         {
-            Uri uriResult;
-
-            if (!Uri.TryCreate(uri, UriKind.Absolute, out uriResult))
-                throw new InvalidOperationException("URI is invalid.");
-
             using var httpClient = new HttpClient();
-            var stream = await httpClient.GetStreamAsync(uriResult);
+            var stream = await httpClient.GetStreamAsync(uri);
             using var decompressor = new GZipStream(stream, CompressionMode.Decompress);
             using var reader = new StreamReader(decompressor);
             
