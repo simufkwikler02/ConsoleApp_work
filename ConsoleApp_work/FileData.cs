@@ -23,12 +23,7 @@ namespace ConsoleApp_work
             using var httpClient = new HttpClient();
             var stream = await httpClient.GetStreamAsync(uriResult);
             using var decompressor = new GZipStream(stream, CompressionMode.Decompress);
-            using MemoryStream memStream = new MemoryStream();
-            decompressor.CopyTo(memStream);
-            memStream.Seek(0, SeekOrigin.Begin);
-
-
-            using var reader = new StreamReader(memStream);
+            using var reader = new StreamReader(decompressor);
             
 
             if (!Directory.Exists(pathWrite))
