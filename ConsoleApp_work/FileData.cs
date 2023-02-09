@@ -8,142 +8,144 @@ namespace ConsoleApp_work
 {
     public class FileData
     {
-        private string PathRead { get; set; }
         private char Separator = ',';
+        private string fileName = "out_257.csv";
 
-        public  FileData(string path)
+        public async Task DownloadAndSaveCsv(string uri, string pathWrite)
         {
-            PathRead = path;
-        }
+            Uri uriResult;
 
-        public void ReadAndWriteCsv()
-        {
-            if (!File.Exists(this.PathRead))
+            if (!Uri.TryCreate(uri, UriKind.Absolute, out uriResult))
+                throw new InvalidOperationException("URI is invalid.");
+
+            using var httpClient = new HttpClient();
+            var stream = await httpClient.GetStreamAsync(uriResult);
+            using var reader = new StreamReader(stream);
+
+            if (!Directory.Exists(pathWrite))
             {
                 Console.WriteLine("ERROR read. This path is not exist");
                 return;
             }
-            
-            using var reader = File.OpenText(this.PathRead);
 
-            var pathWrite = Path.GetDirectoryName(PathRead);
-            var nameRead = Path.GetFileName(PathRead);
-            pathWrite = pathWrite + nameRead.Insert(0, "out_");
+            var path_save = pathWrite + this.fileName;
 
-            using var writer = File.CreateText(pathWrite);
-
-                
+            using var writer = File.CreateText(path_save);      
             string? line;
-            int i = 0;
-            IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "." };
             var resultLine = new StringBuilder();
 
             while ((line = reader.ReadLine()) != null)
             {
-                resultLine.Clear();
-                i++;
-                
-                var lineSpan = line.AsSpan();
-                var ind = line.IndexOf(Separator);
-                if (ind == -1)
-                    continue;
-
-                var firstLine = lineSpan.Slice(0, ind);
-                if (!(firstLine[0] == 'G' && firstLine[1] == 'S' && firstLine[2] == 'M'))
-                    continue;
-                
-
-                var indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                ushort Mcc;
-                if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Mcc))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-                   
-                            
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                byte Net;
-                if (!byte.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Net))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-
-
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                ushort Area;
-                if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Area))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-
-
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                uint Cell;
-                if (!uint.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Cell))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                double Lon;
-                if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter, out Lon))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-
-                indBuf = ind;
-                ind = line.IndexOf(Separator, indBuf + 1);
-                if (ind == -1)
-                    continue;
-
-                double Lat;
-                if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, formatter, out Lat))
-                {
-                    Console.WriteLine($"line number {i} convert error,line skipped");
-                    continue;
-                }
-
-                    
-                resultLine.Append(Mcc).Append(',');
-                resultLine.Append(Net).Append(',');
-                resultLine.Append(Area).Append(',');
-                resultLine.Append(Cell).Append(',');
-                resultLine.Append(Lon.ToString(formatter)).Append(',');
-                resultLine.Append(Lat.ToString(formatter)).AppendLine();
+                LineEditor(resultLine, line);
                 writer.Write(resultLine);
             }
 
-            Console.WriteLine($"Save to {pathWrite}");
+            Console.WriteLine($"Save to {path_save}");
         }
+
+        private void LineEditor(StringBuilder outLine, string line)
+        {
+            outLine.Clear();
+            var lineSpan = line.AsSpan();
+            var ind = line.IndexOf(Separator);
+            if (ind == -1)
+                return;
+
+            var firstLine = lineSpan.Slice(0, ind);
+            if (firstLine.Length != 3)
+                return;
+
+            if (!(firstLine[0] == 'G' && firstLine[1] == 'S' && firstLine[2] == 'M'))
+                return;
+
+            var indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            ushort Mcc;
+            if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Mcc))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            byte Net;
+            if (!byte.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Net))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            ushort Area;
+            if (!ushort.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Area))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            uint Cell;
+            if (!uint.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), out Cell))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            double Lon;
+            if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, CultureInfo.InvariantCulture, out Lon))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+            indBuf = ind;
+            ind = line.IndexOf(Separator, indBuf + 1);
+            if (ind == -1)
+                return;
+
+            double Lat;
+            if (!double.TryParse(lineSpan.Slice(indBuf + 1, ind - indBuf - 1), NumberStyles.Float, CultureInfo.InvariantCulture, out Lat))
+            {
+                Console.WriteLine($"line convert error,line skipped");
+                return;
+            }
+
+
+            outLine.Append(Mcc).Append(',');
+            outLine.Append(Net).Append(',');
+            outLine.Append(Area).Append(',');
+            outLine.Append(Cell).Append(',');
+            outLine.Append(Lon.ToString(CultureInfo.InvariantCulture)).Append(',');
+            outLine.Append(Lat.ToString(CultureInfo.InvariantCulture)).AppendLine();
+        }
+
     }
 }
