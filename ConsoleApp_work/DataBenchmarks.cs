@@ -13,7 +13,7 @@ namespace ConsoleApp_work
     [RankColumn]
     public class DataBenchmarks
     {
-        private string url = "https://drive.google.com/u/0/uc?id=11gltuDZucDoX_7W32o0MfVFAp9PXFkh9&export=download";
+        private string url = "https://vk.com/doc167552191_659635597?hash=ac787D3lBhREUIqwLeZT5px3AIDPc6Cv1G02z8t8zQT&dl=BBoKYqPxbO5iAGwqTLBHK8uESEMNcamlv3qJozQU5eL";
         private string save_path = "D:\\";
 
         [Benchmark]
